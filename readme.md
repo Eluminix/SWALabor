@@ -26,41 +26,62 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List
 
-class Fruit(BaseModel):
-    name: str
+# Datenmodell für das Wetter
+class Weather(BaseModel):
+    city: str
+    temperature: float
+    description: str
+    humidity: int
+    wind_speed: float
 
-class Fruits(BaseModel):
-    fruits: List[Fruit]
-    
+class WeatherResponse(BaseModel):
+    weather: Weather
+
 app = FastAPI(debug=True)
 
+# CORS Middleware Konfiguration
 origins = [
-    "http://localhost:3000",
-    # Add more origins here
+    "http://localhost:5173",  # Frontend-URL
 ]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=origins,  # Erlaubte Origins
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-memory_db = {"fruits": []}
+# Beispielhafte Datenbank (In-Memory)
+memory_db = {"weather": []}
 
-@app.get("/fruits", response_model=Fruits)
-def get_fruits():
-    return Fruits(fruits=memory_db["fruits"])
-
-@app.post("/fruits")
-def add_fruit(fruit: Fruit):
-    memory_db["fruits"].append(fruit)
-    return fruit
+# Beispielroute, die das Wetter für eine Stadt zurückgibt
+@app.get("/weather/{city}", response_model=WeatherResponse)
+def get_weather(city: str):
+    # Hier solltest du eine API wie OpenWeatherMap, WeatherStack oder ähnliches einbinden,
+    # um das echte Wetter abzurufen. Aktuell geben wir nur Beispielwerte zurück.
+    # Du kannst die `memory_db["weather"]` durch echte Daten ersetzen, wenn du API-Abfragen machst.
     
+    # Beispielhafte Antwort
+    example_weather = Weather(
+        city=city,
+        temperature=22.5,
+        description="Clear Sky",
+        humidity=55,
+        wind_speed=5.0
+    )
+    memory_db["weather"].append(example_weather)
+    
+    return WeatherResponse(weather=example_weather)
+
+# Beispielroute, um manuell Wetterdaten hinzuzufügen
+@app.post("/weather")
+def add_weather(weather: Weather):
+    memory_db["weather"].append(weather)
+    return weather
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host="127.0.0.1", port=8000)
 ```
 
 ### Run the API
