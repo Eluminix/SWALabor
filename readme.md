@@ -106,11 +106,11 @@ if __name__ == "__main__":
 - Make the following dir structure
   - src/
     - components/
-      - Fruits.jsx
-      - AddFruitForm.jsx
-    - App.jsx
-    - main.jsx
-    - api.js
+      - WeatherForm.tsx
+      - WeatherDisplay.tsx
+    - App.tsx
+    - main.tsx
+    - api.ts
 
 ### WeatherDisplay.tsx
 
