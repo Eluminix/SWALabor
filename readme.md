@@ -96,12 +96,14 @@ if __name__ == "__main__":
 
 ### Setup 
 
+- `cd .. (In Hauptverzeichnis wechseln)`
+- `mkdir frontend`
+- `cd frontend`
 - Create a virtual environment: `python3 -m venv venv`
 - Activate the virtual environment:
   - Mac/Linux: `source ./venv/bin/activate`
   - Windows: `.\venv\Scripts\activate`
-- `npm create vite@latest frontend --template react`
-- `cd frontend`
+- `npm create vite@latest --template react`
 - `npm install`
 - `npm install axios`
 
