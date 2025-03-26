@@ -96,6 +96,10 @@ if __name__ == "__main__":
 
 ### Setup 
 
+- Create a virtual environment: `python3 -m venv venv`
+- Activate the virtual environment:
+  - Mac/Linux: `source ./venv/bin/activate`
+  - Windows: `.\venv\Scripts\activate`
 - `npm create vite@latest frontend --template react`
 - `cd frontend`
 - `npm install`
