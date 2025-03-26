@@ -91,67 +91,63 @@ if __name__ == "__main__":
     - main.jsx
     - api.js
 
-### Fruits.jsx
+### WeatherDisplay.tsx
 
-```jsx
-import React, { useEffect, useState } from 'react';
-import api from "../api.js";
-import AddFruitForm from './AddFruitForm';
+```tsx
+import React from 'react';
 
-const FruitList = () => {
-  const [fruits, setFruits] = useState([]);
+interface Weather {
+  city: string;
+  temperature: number;
+  description: string;
+  humidity: number;
+  wind_speed: number;
+}
 
-  const fetchFruits = async () => {
-    try {
-      const response = await api.get('/fruits');
-      setFruits(response.data.fruits);
-    } catch (error) {
-      console.error("Error fetching fruits", error);
-    }
-  };
+interface WeatherDisplayProps {
+  weather: Weather | null;
+  error: string | null;
+}
 
-  const addFruit = async (fruitName) => {
-    try {
-      await api.post('/fruits', { name: fruitName });
-      fetchFruits();  // Refresh the list after adding a fruit
-    } catch (error) {
-      console.error("Error adding fruit", error);
-    }
-  };
+const WeatherDisplay: React.FC<WeatherDisplayProps> = ({ weather, error }) => {
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
 
-  useEffect(() => {
-    fetchFruits();
-  }, []);
+  if (!weather) {
+    return <div>No weather data available.</div>;
+  }
 
   return (
     <div>
-      <h2>Fruits List</h2>
-      <ul>
-        {fruits.map((fruit, index) => (
-          <li key={index}>{fruit.name}</li>
-        ))}
-      </ul>
-      <AddFruitForm addFruit={addFruit} />
+      <h2>Weather in {weather.city}</h2>
+      <p>Temperature: {weather.temperature}°C</p>
+      <p>Description: {weather.description}</p>
+      <p>Humidity: {weather.humidity}%</p>
+      <p>Wind Speed: {weather.wind_speed} m/s</p>
     </div>
   );
 };
 
-export default FruitList;
+export default WeatherDisplay;
 ```
 
-### AddFruitForm.jsx
+### WeatherForm.tsx
 
-```jsx
+```tsx
 import React, { useState } from 'react';
 
-const AddFruitForm = ({ addFruit }) => {
-  const [fruitName, setFruitName] = useState('');
+interface WeatherFormProps {
+  onSubmit: (city: string) => void;
+}
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    if (fruitName) {
-      addFruit(fruitName);
-      setFruitName('');
+const WeatherForm: React.FC<WeatherFormProps> = ({ onSubmit }) => {
+  const [city, setCity] = useState('');
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (city.trim()) {
+      onSubmit(city);
     }
   };
 
@@ -159,33 +155,51 @@ const AddFruitForm = ({ addFruit }) => {
     <form onSubmit={handleSubmit}>
       <input
         type="text"
-        value={fruitName}
-        onChange={(e) => setFruitName(e.target.value)}
-        placeholder="Enter fruit name"
+        value={city}
+        onChange={(e) => setCity(e.target.value)}
+        placeholder="Enter city name"
       />
-      <button type="submit">Add Fruit</button>
+      <button type="submit">Get Weather</button>
     </form>
   );
 };
 
-export default AddFruitForm;
+export default WeatherForm;
 ```
 
-### App.jsx
+### App.tsx
 
-```jsx
-import React from 'react';
-import './App.css';
-import FruitList from './components/Fruits';
+```tsx
+import React, { useState } from 'react';
+import { getWeather } from './api';
+import WeatherForm from './components/WeatherForm';
+import WeatherDisplay from './components/WeatherDisplay';
+import MapComponent from './components/MapComponent';
+import './App.css'
 
-const App = () => {
+const App: React.FC = () => {
+  const [weather, setWeather] = useState<null | { city: string; temperature: number; description: string; humidity: number; wind_speed: number }>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleCitySubmit = async (city: string) => {
+    setError(null);  // Fehler zurücksetzen
+    try {
+      const weatherData = await getWeather(city);
+      setWeather(weatherData);
+    } catch (error) {
+      setError('Failed to fetch weather data.');
+    }
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <h1>Fruit Management App</h1>
+      <header>
+        <h1>Weather App</h1>
       </header>
       <main>
-        <FruitList />
+        <MapComponent />
+        <WeatherForm onSubmit={handleCitySubmit} />
+        <WeatherDisplay weather={weather} error={error} /> 
       </main>
     </div>
   );
@@ -194,18 +208,22 @@ const App = () => {
 export default App;
 ```
 
-### api.js
+### api.ts
 
-```js
+```ts
 import axios from 'axios';
 
-// Create an instance of axios with the base URL
-const api = axios.create({
-  baseURL: "http://localhost:8000"
-});
+const API_BASE_URL = 'http://localhost:8000';  // Deine FastAPI-Backend-URL
 
-// Export the Axios instance
-export default api;
+export const getWeather = async (city: string) => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/weather/${city}`);
+    return response.data.weather;
+  } catch (error) {
+    console.error('Error fetching weather:', error);
+    throw error;
+  }
+};
 ```
 
 ### Run the App
