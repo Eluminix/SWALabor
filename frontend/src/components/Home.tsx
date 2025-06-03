@@ -7,6 +7,7 @@ import vergleichImg from "../assets/vergleich.png";
 import vorhersageImg from "../assets/vorhersage.png";
 import parteiImg from "../assets/partei.png";
 import demografieImg from "../assets/demografie.png";
+import newspaperImg from "../assets/newspaper.png";
 import zeitverlaufImg from "../assets/zeitverlauf.png";
 
 
@@ -37,16 +38,16 @@ const Home = () => {
           image: parteiImg,
         },
         {
-          title: "Wahlbeteiligung & Demografie",
-          description: "Zusammenhang zwischen Bevölkerung und Beteiligung.",
+          title: "Historische Entwicklung",
+          description: "Entwicklung der Wahlergebnisse über die Jahre.",
           link: "/demografie",
-          image: demografieImg,
+          image: zeitverlaufImg,
         },
         {
           title: "News",
-          description: "Entwicklung der Wahlergebnisse über die Jahre.",
+          description: "Aktuelle Informationen zu den Wahlergebnissen und -prognosen.",
           link: "/news",
-          image: zeitverlaufImg,
+          image: newspaperImg,
         },
       ];
       

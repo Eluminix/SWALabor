@@ -7,7 +7,7 @@ const navItems = [
   { name: "Vergleich", path: "/vergleich" },
   { name: "Vorhersage", path: "/vorhersage" },
   { name: "Partei-Analyse", path: "/partei-analyse" },
-  { name: "Wahlbeteiligung & Demografie", path: "/demografie" },
+  { name: "Historische Entwicklung", path: "/demografie" },
   { name: "News", path: "/news" },
 ];
 
