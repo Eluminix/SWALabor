@@ -27,4 +27,9 @@ docker compose up
 ![image](https://github.com/user-attachments/assets/9867d391-4c57-4827-b8e9-e0a4e8518a4d)
 
 
+## Änderungen sichtbar machen
+
+docker compose restart
+
+
 
