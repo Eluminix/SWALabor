@@ -5,16 +5,19 @@ import { Routes, Route } from "react-router-dom";
 import Home from "./components/Home";
 import Navbar from "./components/Navbar";
 import MapPage from "./components/Map";
+import MehrErfahren from "./components/LearnMore";
 import ComparisonPage from "./components/Comparison";
+import PredictionPage from "./components/Prediction";
+import PartyAnalysisPage from "./components/PartyAnalysis";
 
 // Dummy-Komponenten als Platzhalter
 //const Karte = () => <div>Interaktive Karte</div>;
 // const Vergleich = () => <div>Vergleichsansicht</div>;
-const Vorhersage = () => <div>Vorhersage-Tool</div>;
-const ParteiAnalyse = () => <div>Partei-Analyse</div>;
+// const Vorhersage = () => <div>Vorhersage-Tool</div>;
+// const ParteiAnalyse = () => <div>Partei-Analyse</div>;
 const Demografie = () => <div>Wahlbeteiligung & Demografie</div>;
 const News = () => <div>News</div>;
-const MehrErfahren = () => <div>Mehr erfahren</div>;
+// const MehrErfahren = () => <div>Mehr erfahren</div>;
 
 function App() {
   return (
@@ -25,8 +28,8 @@ function App() {
       <Route path="/" element={<Home />} />
       <Route path="/karte" element={<MapPage />} />
       <Route path="/vergleich" element={<ComparisonPage />} />
-      <Route path="/vorhersage" element={<Vorhersage />} />
-      <Route path="/partei-analyse" element={<ParteiAnalyse />} />
+      <Route path="/vorhersage" element={<PredictionPage />} />
+      <Route path="/partei-analyse" element={<PartyAnalysisPage />} />
       <Route path="/demografie" element={<Demografie />} />
       <Route path="/news" element={<News />} />
       <Route path="/mehr-erfahren" element={<MehrErfahren />} />
