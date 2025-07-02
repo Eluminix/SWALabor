@@ -9,14 +9,17 @@ import MehrErfahren from "./components/LearnMore";
 import ComparisonPage from "./components/Comparison";
 import PredictionPage from "./components/Prediction";
 import PartyAnalysisPage from "./components/PartyAnalysis";
+import SurveysPage from "./components/SurveysPage";
+import NewsPage from "./components/NewsPage";
+import ParticipationAndDemographicsPage from "./components/ParticipationAndDemographics";
 
 // Dummy-Komponenten als Platzhalter
 //const Karte = () => <div>Interaktive Karte</div>;
 // const Vergleich = () => <div>Vergleichsansicht</div>;
 // const Vorhersage = () => <div>Vorhersage-Tool</div>;
 // const ParteiAnalyse = () => <div>Partei-Analyse</div>;
-const Demografie = () => <div>Wahlbeteiligung & Demografie</div>;
-const News = () => <div>News</div>;
+// const Demografie = () => <div>Wahlbeteiligung & Demografie</div>;
+//const News = () => <div>News</div>;
 // const MehrErfahren = () => <div>Mehr erfahren</div>;
 
 function App() {
@@ -30,9 +33,10 @@ function App() {
       <Route path="/vergleich" element={<ComparisonPage />} />
       <Route path="/vorhersage" element={<PredictionPage />} />
       <Route path="/partei-analyse" element={<PartyAnalysisPage />} />
-      <Route path="/demografie" element={<Demografie />} />
-      <Route path="/news" element={<News />} />
+      <Route path="/demografie" element={<ParticipationAndDemographicsPage />} />
+      <Route path="/news" element={<NewsPage />} />
       <Route path="/mehr-erfahren" element={<MehrErfahren />} />
+      <Route path="/umfragen" element={<SurveysPage />} />
     </Routes>
     </main>
     </div>
