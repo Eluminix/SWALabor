@@ -28,12 +28,14 @@ const PredictionPage = () => {
   useEffect(() => {
     if (!historicalData || !targetYear) return;
 
-    const parteien = Object.keys(Object.values(historicalData)[0] || {});
+    const parteien = ["CDU", "SPD", "GRÜNE", "FDP", "AfD", "Die Linke"];
+    
     const forecast: ParteiProzent = {};
 
     parteien.forEach((partei) => {
       const years = Object.keys(historicalData)
         .map(Number)
+        .filter((year) => [2017, 2021, 2025].includes(year))
         .sort((a, b) => a - b);
       const values = years.map((year) => historicalData[year]?.[partei] ?? 0);
 

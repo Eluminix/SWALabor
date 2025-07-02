@@ -7,7 +7,8 @@ const navItems = [
   { name: "Vergleich", path: "/vergleich" },
   { name: "Vorhersage", path: "/vorhersage" },
   { name: "Partei-Analyse", path: "/partei-analyse" },
-  { name: "Historische Entwicklung", path: "/demografie" },
+  { name: "Wahlbeteiligung & Demografie", path: "/demografie" },
+  { name: "Wahlumfragen", path: "/umfragen" },
   { name: "News", path: "/news" },
 ];
 
@@ -20,9 +21,9 @@ const Navbar = () => {
         <div className="flex items-center space-x-2">
           <Link to="/" className="flex items-center gap-1 hover:text-blue-700 transition">
             {/* Option A: Lucide Icon */}
-            <Home size={20} className="text-blue-700" />
+            
             {/* Option B: Emoji-Fallback => <span className="text-lg">🏠</span> */}
-            <span className="text-xl font-bold text-blue-700">Wahlergebnisse</span>
+            <span className="text-xl font-bold text-blue-700">🏠 Wahlergebnisse</span>
           </Link>
         </div>
 

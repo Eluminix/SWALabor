@@ -1,4 +1,3 @@
-// imports ...
 import React, { useEffect, useState } from "react";
 import {
   MapContainer,
@@ -12,7 +11,8 @@ import L from "leaflet";
 import { Feature, FeatureCollection } from "geojson";
 import MapZoomToSelection from "./MapZoomToSelection";
 import { bundeslandInfos } from "../data/bundeslandInfos";
-// 🖼️ Icons
+
+// Wappen
 import wappenBW from "../assets/wappen/baden-wuerrtemberg.svg";
 import wappenBY from "../assets/wappen/bayern.svg";
 import wappenBE from "../assets/wappen/berlin.svg";
@@ -30,7 +30,8 @@ import wappenST from "../assets/wappen/sachsen-anhalt.svg";
 import wappenSH from "../assets/wappen/schleswig-holstein.svg";
 import wappenTH from "../assets/wappen/thueringen.svg";
 
-// 🛠️ Leaflet Fix
+// Leaflet Icon Fix
+
 delete (L.Icon.Default.prototype as any)._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
@@ -75,19 +76,14 @@ export const farben: Record<string, string> = {
 
 const deutschlandBounds: [[number, number], [number, number]] = [[46.0, 5.0], [55.5, 15.5]];
 const wahl = ["Bundestagswahl", "Landtagswahl"];
-const wahljahr = [2025,2021,2017,2013]
+const wahljahr = [2025, 2021, 2017, 2013, 2009, 2005, 2002, 1998, 1994, 1990, 1987, 1984, 1983, 1980, 1976, 1972, 1969, 1965, 1961, 1957, 1953, 1949];
 
-const GeoLayer = ({
-  geoData,
-  setSelected,
-  selected,
-}: {
+const GeoLayer = ({ geoData, setSelected, selected }: {
   geoData: FeatureCollection;
   setSelected: (b: Bundesland) => void;
   selected: Bundesland | null;
 }) => {
   const map = useMap();
-
   return (
     <GeoJSON
       data={geoData}
@@ -102,18 +98,10 @@ const GeoLayer = ({
       }}
       onEachFeature={(feature: Feature, layer) => {
         const name = feature.properties?.name;
-        layer.bindTooltip(`Bundesland: ${name}`, {
-          direction: "center",
-          sticky: true,
-          opacity: 0.8,
-        });
+        layer.bindTooltip(`Bundesland: ${name}`, { direction: "center", sticky: true, opacity: 0.8 });
         layer.on("click", () => {
           const bounds = (layer as L.Polygon).getBounds();
-          map.flyToBounds(bounds, {
-            padding: [20, 20],
-            animate: true,
-            duration: 1.0,
-          });
+          map.flyToBounds(bounds, { padding: [20, 20], animate: true, duration: 1.0 });
           const match = bundeslaender.find((b) => b.value === name);
           if (match) setSelected(match);
         });
@@ -126,7 +114,7 @@ const MapPage = () => {
   const [selected, setSelected] = useState<Bundesland | null>(null);
   const [geoData, setGeoData] = useState<FeatureCollection | null>(null);
   const [electionResults, setElectionResults] = useState<Record<string, number> | { error: string } | null>(null);
-
+  const [year, setYear] = useState<number>(2025);
 
   useEffect(() => {
     fetch("/data/bundeslaender.geo.json")
@@ -136,15 +124,15 @@ const MapPage = () => {
 
   useEffect(() => {
     if (!selected) return;
-    fetch(`http://localhost:8000/election-results?state=${encodeURIComponent(selected.value)}`)
+    fetch(`http://localhost:8000/election-results?state=${encodeURIComponent(selected.value)}&year=${year}`)
       .then((res) => res.json())
       .then((data) => setElectionResults(data))
       .catch(() => setElectionResults(null));
-  }, [selected]);
+  }, [selected, year]);
 
   return (
     <div className="max-w-screen-xl mx-auto px-6 py-10">
-      <h1 className="text-3xl font-bold mb-4">Interaktive Karte</h1>
+      <h1 className="text-3xl font-bold mb-4">🗺️ Wahlergebnisse der Bundesländer für die {wahl[0]} {year}</h1>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <MapContainer
@@ -163,7 +151,6 @@ const MapPage = () => {
         </MapContainer>
 
         <div>
-          <p className="text-lg mb-2">Wahlergebnisse der Bundesländer für die {wahl[0]} {wahljahr[0]}</p>
           <label className="block mb-1 font-medium">Bundesland:</label>
           <Select
             options={bundeslaender}
@@ -178,53 +165,51 @@ const MapPage = () => {
             )}
           />
 
-{selected && (
-  <div className="mt-6">
-    <h2 className="font-semibold text-xl mb-2">
-      Wahlergebnisse – {selected.label}
-    </h2>
+          <label className="block mb-1 font-medium mt-4">Jahr:</label>
+          <Select
+            options={wahljahr.map((y) => ({ value: y, label: y.toString() }))}
+            value={{ value: year, label: year.toString() }}
+            onChange={(val) => setYear(val?.value || 2025)}
+          />
 
-    {electionResults && !("error" in electionResults) ? (
-      Object.entries(electionResults).map(([partei, prozent]) => (
-        <div key={partei} className="flex items-center mb-2">
-          <div className="w-24">{partei}</div>
-          <div className="flex items-center w-full gap-2">
-            <div
-              className={`h-4 ${farben[partei] || "bg-gray-300"} rounded`}
-              style={{ width: `${prozent}%`, minWidth: "1rem" }}
-            />
-            <span className="text-sm text-black font-medium">
-              {typeof prozent === "number" ? `${prozent.toFixed(1)}%` : "–"}
-            </span>
-          </div>
-        </div>
-      ))
-    ) : (
-      <div className="text-red-600 italic mt-2">
-        ⚠️ Keine Wahldaten verfügbar.
-      </div>
-    )}
-  </div>
-)}
-
-
+          {selected && (
+            <div className="mt-6">
+              <h2 className="font-semibold text-xl mb-2">Wahlergebnisse – {selected.label}</h2>
+              {electionResults && !("error" in electionResults) ? (
+                Object.entries(electionResults).map(([partei, prozent]) => (
+                  <div key={partei} className="flex items-center mb-2">
+                    <div className="w-24">{partei}</div>
+                    <div className="flex items-center w-full gap-2">
+                      <div
+                        className={`h-4 ${farben[partei] || "bg-gray-300"} rounded`}
+                        style={{ width: `${prozent}%`, minWidth: "1rem" }}
+                      />
+                      <span className="text-sm text-black font-medium">
+                        {typeof prozent === "number" ? `${prozent.toFixed(1)}%` : "–"}
+                      </span>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="text-red-600 italic mt-2">⚠️ Keine Wahldaten verfügbar.</div>
+              )}
+            </div>
+          )}
 
           {selected && bundeslandInfos[selected.value] && (
             <div className="mt-10 border-t pt-8">
               <h2 className="text-2xl font-bold mb-4">🧾 Informationen zu {selected.label}</h2>
               <div className="grid md:grid-cols-2 gap-6 text-sm text-gray-800">
-                {Object.entries(bundeslandInfos[selected.value]).map(
-                  ([kategorie, daten]) => (
-                    <div key={kategorie}>
-                      <h3 className="font-semibold text-lg mb-2">📌 {kategorie}</h3>
-                      <ul className="list-disc list-inside space-y-1">
-                        {Object.entries(daten).map(([key, value]) => (
-                          <li key={key}><strong>{key}:</strong> {value}</li>
-                        ))}
-                      </ul>
-                    </div>
-                  )
-                )}
+                {Object.entries(bundeslandInfos[selected.value]).map(([kategorie, daten]) => (
+                  <div key={kategorie}>
+                    <h3 className="font-semibold text-lg mb-2">📌 {kategorie}</h3>
+                    <ul className="list-disc list-inside space-y-1">
+                      {Object.entries(daten).map(([key, value]) => (
+                        <li key={key}><strong>{key}:</strong> {value}</li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
               </div>
             </div>
           )}

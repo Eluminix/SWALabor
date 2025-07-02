@@ -20,6 +20,21 @@ const parteien = ["CDU", "SPD", "GRÜNE", "FDP", "AfD", "Die Linke"];
 
 const deutschlandBounds: [[number, number], [number, number]] = [[46.0, 5.0], [55.5, 15.5]];
 
+export const parteiTexte: Record<string, string> = {
+  CDU: `Die Christlich Demokratische Union Deutschlands (CDU) ist eine konservative Volkspartei, die traditionell wirtschaftsfreundlich und wertekonservativ ausgerichtet ist. Sie stellt häufig Ministerpräsidenten in den Bundesländern und war in der Vergangenheit oft führende Regierungspartei auf Bundesebene.`,
+  
+  SPD: `Die Sozialdemokratische Partei Deutschlands (SPD) ist eine der ältesten Parteien des Landes und vertritt eine sozialdemokratische Politik. Sie engagiert sich für soziale Gerechtigkeit, Arbeitnehmerrechte und staatliche Regulierung der Wirtschaft.`,
+  
+  GRÜNE: `BÜNDNIS 90/DIE GRÜNEN stehen für Umwelt- und Klimaschutz, nachhaltige Entwicklung sowie eine progressive Gesellschaftspolitik. Die Partei hat in den letzten Jahren insbesondere in städtischen Regionen stark an Bedeutung gewonnen.`,
+  
+  FDP: `Die Freie Demokratische Partei (FDP) verfolgt eine liberale Wirtschafts- und Gesellschaftspolitik. Sie setzt sich für individuelle Freiheit, Marktwirtschaft und Digitalisierung ein. Die FDP findet besonders in wirtschaftsstarken Regionen Zuspruch.`,
+  
+  AfD: `Die Alternative für Deutschland (AfD) ist eine rechtspopulistische Partei, die sich vor allem durch ihre migrations- und EU-kritische Haltung profiliert. Ihre Unterstützung variiert stark zwischen Ost- und Westdeutschland.`,
+  
+  "Die Linke": `DIE LINKE geht aus der ehemaligen PDS hervor und vertritt sozialistische und soziale Positionen. Sie setzt sich für Umverteilung, soziale Sicherheit und staatliche Daseinsvorsorge ein – mit regionalen Schwerpunkten in Ostdeutschland.`
+};
+
+
 // 🧪 Zeitverlauf-Daten für Diagramm
 const dummyDaten: Record<string, { jahr: number; anteil: number }[]> = {
   CDU: [{ jahr: 2005, anteil: 30 }, { jahr: 2009, anteil: 24 }, { jahr: 2013, anteil: 32 }, { jahr: 2017, anteil: 37 }, { jahr: 2021, anteil: 26 }, { jahr: 2025, anteil: 24 }],
@@ -51,9 +66,15 @@ const dummyRegional: Record<string, Record<string, number>> = {
 };
 
 const getColor = (value: number): string => {
+  if (value > 35) return "#011029"; 
+  if (value > 32) return "#143082"; 
   if (value > 30) return "#1e3a8a"; // dunkelblau
+  if (value > 25) return "#2d4a9c";
   if (value > 20) return "#3b82f6"; // mittelblau
+  if (value > 15) return  "#4e90fc";
   if (value > 10) return "#93c5fd"; // hellblau
+  if (value > 5) return "#a3cfff";
+  if (value > 3) return "#bddcff";
   if (value > 0) return "#dbeafe"; // sehr hell
   return "#f3f4f6"; // grau
 };
@@ -70,7 +91,7 @@ const PartyAnalysisPage = () => {
 
   return (
     <div className="max-w-screen-xl mx-auto px-6 py-10">
-      <h1 className="text-3xl font-bold mb-6">Partei-Analyse</h1>
+      <h1 className="text-3xl font-bold mb-6">🧮 Partei-Analyse</h1>
 
       <div className="mb-6">
         <label className="block mb-2 font-medium">Partei:</label>
@@ -123,6 +144,7 @@ const PartyAnalysisPage = () => {
             <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
             {geoData && (
               <GeoJSON
+                key={selectedPartei} 
                 data={geoData}
                 style={(feature) => {
                     if (!feature || !feature.properties?.name) {
@@ -157,8 +179,7 @@ const PartyAnalysisPage = () => {
       <div className="border rounded p-4 shadow-sm">
         <h2 className="text-xl font-semibold mb-2">Über {selectedPartei}</h2>
         <p className="text-gray-700 leading-relaxed">
-          Die Partei {selectedPartei} zeigt regionale Unterschiede bei der Wählergunst. Diese Karte veranschaulicht,
-          wie stark sie in den einzelnen Bundesländern bei der Wahl 2025 vertreten ist.
+          {parteiTexte[selectedPartei] || `Die Partei ${selectedPartei} zeigt regionale Unterschiede bei der Wählergunst. Diese Karte veranschaulicht, wie stark sie in den einzelnen Bundesländern bei der Wahl 2025 vertreten ist.`}
         </p>
       </div>
     </div>
