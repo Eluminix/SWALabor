@@ -20,14 +20,12 @@ docker compose up
 ![image](https://github.com/user-attachments/assets/69b9f9a6-fb9a-4456-920f-3dab0087c0c9)
 
 
-### Wenn alles läuft
-
 ## Starpage:
 
 ![image](https://github.com/user-attachments/assets/9867d391-4c57-4827-b8e9-e0a4e8518a4d)
 
 
-## Änderungen sichtbar machen
+## Änderungen sichtbar machen / Docker restarten
 
 docker compose restart
 
